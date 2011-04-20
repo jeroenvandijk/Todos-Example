@@ -29,19 +29,19 @@ Todos.todoListController = SC.ArrayController.create({
   searchFieldObserver: function() {
     var content, searchFieldValue, searchQuery;
     
-    content = this.get('content')
-    if(content)
-      content.destroy();
+    content = this.get('content');
+    if(content) content.destroy();
 
-    searchFieldValue = this.get('searchField')
-    if(searchFieldValue)
+    searchFieldValue = this.get('searchField');
+    if(searchFieldValue) {
       searchQuery = SC.Query.local(Todos.Todo, { 
         conditions: 'title CONTAINS {searchString}', 
         parameters: { searchString: searchFieldValue }
       });
-    
-    else
+      
+    } else {
       searchQuery = SC.Query.local(Todos.Todo);
+    }
     
     this.set('content', Todos.store.find(searchQuery));      
 
@@ -73,10 +73,8 @@ Todos.createTodoView = SC.TemplateView.create(SC.TextFieldSupport, {
   insertNewline: function() {
     var value = this.get('value');
 
-    if (value) {
-      Todos.todoListController.createTodo(value);
-      this.set('value', '');
-    }
+    Todos.todoListController.createTodo(value);
+    this.set('value', '');
   }
 });
 

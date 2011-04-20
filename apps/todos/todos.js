@@ -13,9 +13,12 @@ Todos.Todo = SC.Record.extend({
   isDone: SC.Record.attr(Boolean),
 });
 
+Todos.Todo.FIXTURES = [
+  { guid: 1, title: "Make this more dynamic", isDone: false }
+];
+
 var query = SC.Query.local(Todos.Todo);
 var todos = Todos.store.find(query);
-
 
 Todos.todoListController = SC.ArrayController.create({
   content: todos,

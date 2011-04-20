@@ -4,6 +4,10 @@
   <input id="new-todo" type="text" placeholder="What to do?">
 {{/view}}
 
+{{#view "Todos.searchTodoView"}}
+  <input id="search-todo" type="text" placeholder="Search todo's">
+{{/view}}
+
 {{#view "Todos.statsView" id="stats"}}
   {{#view "Todos.clearCompletedView"}}
     <button>Clear Completed Todos</button>

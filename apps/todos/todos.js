@@ -14,14 +14,38 @@ Todos.Todo = SC.Record.extend({
 });
 
 Todos.Todo.FIXTURES = [
-  { guid: 1, title: "Make this more dynamic", isDone: false }
+  { guid: 1, title: "Make this more dynamic", isDone: false },
+  { guid: 2, title: "Add search functionality", isDone: false }
 ];
 
-var query = SC.Query.local(Todos.Todo);
-var todos = Todos.store.find(query);
+Todos.searchController = SC.Object.create({
+  query: null
+});
 
 Todos.todoListController = SC.ArrayController.create({
-  content: todos,
+  
+  searchFieldBinding: 'Todos.searchController.query',
+
+  searchFieldObserver: function() {
+    var content, searchFieldValue, searchQuery;
+    
+    content = this.get('content')
+    if(content)
+      content.destroy();
+
+    searchFieldValue = this.get('searchField')
+    if(searchFieldValue)
+      searchQuery = SC.Query.local(Todos.Todo, { 
+        conditions: 'title CONTAINS {searchString}', 
+        parameters: { searchString: searchFieldValue }
+      });
+    
+    else
+      searchQuery = SC.Query.local(Todos.Todo);
+    
+    this.set('content', Todos.store.find(searchQuery));      
+
+  }.observes('searchField'),
 
   createTodo: function(title) {
     Todos.store.createRecord(Todos.Todo, { title: title, isDone: false });
@@ -32,7 +56,7 @@ Todos.todoListController = SC.ArrayController.create({
   }.property('@each.isDone'),
 
   clearCompletedTodos: function() {
-    this.filterProperty('isDone', true).forEach(this.removeObject, this);
+    this.filterProperty('isDone', true).forEach(this.destroy, this);
   },
 
   allAreDone: function(key, value) {
@@ -55,6 +79,17 @@ Todos.createTodoView = SC.TemplateView.create(SC.TextFieldSupport, {
     }
   }
 });
+
+Todos.searchTodoView = SC.TemplateView.create(SC.TextFieldSupport, {
+  insertNewline: function() {
+    var value = this.get('value');
+
+    if (value) {
+      Todos.searchController.set('query', value);
+    }
+  }
+});
+
 
 Todos.clearCompletedView = SC.TemplateView.create({
   mouseUp: function() {

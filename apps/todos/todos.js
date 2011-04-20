@@ -13,12 +13,15 @@ Todos.Todo = SC.Record.extend({
   isDone: SC.Record.attr(Boolean),
 });
 
+var query = SC.Query.local(Todos.Todo);
+var todos = Todos.store.find(query);
+
+
 Todos.todoListController = SC.ArrayController.create({
-  content: [],
+  content: todos,
 
   createTodo: function(title) {
-    var todo = Todos.store.createRecord(Todos.Todo, { title: title, isDone: false });
-    this.pushObject(todo);
+    Todos.store.createRecord(Todos.Todo, { title: title, isDone: false });
   },
 
   remaining: function() {

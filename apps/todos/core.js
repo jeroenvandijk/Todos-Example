@@ -8,16 +8,6 @@ Todos = SC.Application.create({
   store: SC.Store.create().from(SC.Record.fixtures)
 });
 
-Todos.Todo = SC.Record.extend({
-  title: SC.Record.attr(String),
-  isDone: SC.Record.attr(Boolean),
-});
-
-Todos.Todo.FIXTURES = [
-  { guid: 1, title: "Make this more dynamic", isDone: false },
-  { guid: 2, title: "Add search functionality", isDone: false }
-];
-
 Todos.searchController = SC.Object.create({
   query: null
 });
@@ -73,18 +63,17 @@ Todos.createTodoView = SC.TemplateView.create(SC.TextFieldSupport, {
   insertNewline: function() {
     var value = this.get('value');
 
-    Todos.todoListController.createTodo(value);
-    this.set('value', '');
+    if(value) {
+      Todos.todoListController.createTodo(value);
+      this.set('value', '');
+    }
   }
 });
 
 Todos.searchTodoView = SC.TemplateView.create(SC.TextFieldSupport, {
   insertNewline: function() {
     var value = this.get('value');
-
-    if (value) {
-      Todos.searchController.set('query', value);
-    }
+    Todos.searchController.set('query', value);
   }
 });
 
